@@ -56,3 +56,18 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published page
+        run: |
+          set -euo pipefail
+          url="${{ steps.deployment.outputs.page_url }}"
+          for attempt in $(seq 1 8); do
+            if curl --fail --silent --show-error --location "$url" -o /tmp/countdown-studio-live.html; then
+              if grep -q "Countdown Studio" /tmp/countdown-studio-live.html; then
+                echo "Published page responds and contains the app title."
+                exit 0
+              fi
+            fi
+            sleep 5
+          done
+          echo "Published page could not be verified at $url" >&2
+          exit 1
