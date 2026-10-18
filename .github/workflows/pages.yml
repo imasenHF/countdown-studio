@@ -52,10 +52,12 @@ jobs:
             const brand = document.querySelector('.section-brand-title .section-brand-dot');
             const brandIcon = document.querySelector('.section-brand-icon');
             const footer = document.querySelector('.site-footer');
-            const copyright = document.querySelector('.site-footer-copyright');
-            const copyrightYear = document.querySelector('#current-year');
-            const copyrightNotice = document.querySelector('.site-footer-notice');
-            const sourceLink = document.querySelector('.site-footer-source a');
+            const footerBrand = document.querySelector('.footer-parent-link');
+            const footerProject = document.querySelector('.footer-section-link');
+            const footerTagline = document.querySelector('.site-footer-brand small');
+            const copyright = document.querySelector('.footer-right');
+            const copyrightYear = document.querySelector('#currentYear');
+            const footerBrandGold = footerBrand.querySelector('.footer-brand-dot');
             const groups = [...document.querySelectorAll('.choice-grid')];
             const visibleSelects = [...document.querySelectorAll('select')].filter(el => !el.hidden).length;
             const choiceInteractions = groups.length === 4 && groups.every(group => {
@@ -79,11 +81,18 @@ jobs:
               choiceGroups: groups.length,
               visibleSelects: visibleSelects,
               choiceInteractions: choiceInteractions,
-              copyrightText: copyright.textContent.trim(),
+              footerHasContainer: footer.classList.contains('container'),
+              footerBrandText: footerBrand.textContent,
+              footerBrandHref: footerBrand.getAttribute('href'),
+              footerBrandGold: getComputedStyle(footerBrandGold).color,
+              footerProjectText: footerProject.textContent,
+              footerProjectHref: footerProject.getAttribute('href'),
+              footerTagline: footerTagline.textContent.trim(),
+              copyrightText: copyright.textContent.trim().replace(/\s+/g, ' '),
               copyrightYear: copyrightYear.textContent,
-              copyrightNotice: copyrightNotice.textContent.trim(),
-              sourceHref: sourceLink.getAttribute('href'),
-              footerBorderWidth: getComputedStyle(footer).borderTopWidth
+              copyrightNotice: copyright.textContent.includes('本工具说明与文字内容版权归作者所有，未经许可不得复制、转载或用于商业用途。'),
+              footerBorderWidth: getComputedStyle(footer).borderTopWidth,
+              footerPadding: getComputedStyle(footer).padding
             };
             const pass = result.cards === 4 &&
                          result.controlsBottom <= result.viewport &&
@@ -94,11 +103,18 @@ jobs:
                          result.visibleSelects === 0 &&
                          result.choiceGroups === 4 &&
                          result.choiceInteractions &&
-                         result.copyrightText === '© ' + new Date().getFullYear() + ' hyphoon. All rights reserved.' &&
+                         result.footerHasContainer &&
+                         result.footerBrandText === 'plastocyanin.' &&
+                         result.footerBrandHref === 'https://plastocyanin.org/' &&
+                         result.footerBrandGold === 'rgb(182, 140, 55)' &&
+                         result.footerProjectText === 'Countdown Studio' &&
+                         result.footerProjectHref === 'https://plastocyanin.org/countdown-studio/' &&
+                         result.footerTagline === 'PowerPoint countdown animation' &&
+                         result.copyrightText.includes('© ' + new Date().getFullYear() + ' wuhaifeng@ustc.edu.cn. All rights reserved.') &&
                          result.copyrightYear === String(new Date().getFullYear()) &&
-                         result.copyrightNotice.includes('未经许可不得复制、转载或用于商业用途') &&
-                         result.sourceHref === 'https://github.com/imasenHF/countdown-studio' &&
-                         result.footerBorderWidth === '2px';
+                         result.copyrightNotice &&
+                         result.footerBorderWidth === '2px' &&
+                         result.footerPadding.startsWith('28px 40px 35px');
             document.body.dataset.layoutCheck = pass ? 'pass' : 'fail';
             document.body.dataset.layoutMetrics = JSON.stringify(result);
           });
