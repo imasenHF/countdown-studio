@@ -49,20 +49,41 @@ jobs:
             const cards = controls.querySelectorAll('.section');
             const previewCard = document.querySelector('.preview-card');
             const previewStage = document.querySelector('.preview-stage');
-            const brand = document.querySelector('.brand-name .brand-gold');
+            const brand = document.querySelector('.section-brand-title .section-brand-dot');
+            const brandIcon = document.querySelector('.section-brand-icon');
+            const groups = [...document.querySelectorAll('.choice-grid')];
+            const visibleSelects = [...document.querySelectorAll('select')].filter(el => !el.hidden).length;
+            const choiceInteractions = groups.length === 4 && groups.every(group => {
+              const target = document.getElementById(group.dataset.control);
+              const initial = target.value;
+              const next = [...group.querySelectorAll('.choice-option')].find(button => button.dataset.value !== initial);
+              if (!next) return false;
+              next.click();
+              const worked = target.value === next.dataset.value && next.getAttribute('aria-pressed') === 'true';
+              group.querySelector('.choice-option[data-value="' + initial + '"]').click();
+              return worked;
+            });
             const result = {
               viewport: innerHeight,
               controlsBottom: Math.round(controls.getBoundingClientRect().bottom),
               cards: cards.length,
               previewWidth: Math.round(previewCard.getBoundingClientRect().width),
               previewHeight: Math.round(previewStage.getBoundingClientRect().height),
-              brandGold: getComputedStyle(brand).color
+              brandGold: getComputedStyle(brand).color,
+              brandIcon: brandIcon.getAttribute('src'),
+              choiceGroups: groups.length,
+              visibleSelects: visibleSelects,
+              choiceInteractions: choiceInteractions
             };
             const pass = result.cards === 4 &&
                          result.controlsBottom <= result.viewport &&
                          result.previewWidth <= 520 &&
                          result.previewHeight <= 320 &&
-                         result.brandGold === 'rgb(182, 140, 55)';
+                         result.brandGold === 'rgb(182, 140, 55)' &&
+                         result.brandIcon.includes('/assets/images/imasen_phi_logo/imasen-phi-64.png') &&
+                         result.visibleSelects === 0 &&
+                         result.choiceGroups === 4 &&
+                         result.choiceInteractions;
             document.body.dataset.layoutCheck = pass ? 'pass' : 'fail';
             document.body.dataset.layoutMetrics = JSON.stringify(result);
           });
