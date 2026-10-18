@@ -13,7 +13,8 @@ Generate compact countdown animation assets for insertion as individual componen
 - Content-aware crop detects non-transparent pixels on a probe frame. The padding control adjusts transparent margin around the detected bounds.
 - Preview is rendered from the cropped output so it approximates the exported component's dimensions.
 - Desktop UI uses a compact two-column grid of tool cards and a smaller preview to keep all primary controls within the first viewport on common desktop resolutions; smaller screens stack the panels.
-- Upper-left branding uses the shared plastocyanin serif wordmark and gold `o` / terminal period, with the project title below.
+- Upper-left branding uses the exact shared Workshop brand markup, including the official 48 px `imasen-phi-64.png` symbol, Georgia wordmark, and gold `o` / terminal period; the `Countdown Studio` subtitle follows the same font sizing and alignment as the Workshop subtitle.
+- Animation style, export background, resolution, and MP4 frame rate use palette-card-style button groups instead of visible dropdowns. The selected button and rendering/export settings remain synchronized.
 - GIF export uses `gif.js` and binary transparency; MP4 export uses WebCodecs and `mp4-muxer` for offline timestamped encoding.
 - MP4 uses a solid background because common H.264 MP4 output does not preserve alpha.
 
