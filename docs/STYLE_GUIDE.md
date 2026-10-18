@@ -1,9 +1,11 @@
 # Countdown Studio — UI and Export Rules
 
 ## Layout
-- Use a compact editor panel and a large preview surface. Keep controls readable on desktop and stack the editor below the preview on narrow screens.
+- On desktop, organize all editor functions in four compact cards arranged as a two-column grid: timer/style, palettes, trimming/output, and preview/export controls. Show all tools without requiring a long vertical sidebar.
+- Give the cropped-component preview a restrained width and height. Keep it centered and display the actual cropped output aspect ratio; the output file's pixel dimensions must remain independent of the on-page preview size.
+- On narrower screens, stack the preview above the settings, with settings in two columns where space allows and one column on phones.
+- The upper-left site identity follows the shared plastocyanin brand: Georgia / serif wordmark `plastocyanin.`, with the letter `o` and final period colored `#b68c37`, plus a smaller `Countdown Studio` project name on the next line. The wordmark links to the main site and the project name to the current tool.
 - The checkerboard denotes transparency in the preview only; it must never be included in exported files.
-- Keep the preview centered and display the actual cropped output aspect ratio.
 
 ## Content trimming
 - The main output canvas is an internal rendering surface, not the final exported frame.
