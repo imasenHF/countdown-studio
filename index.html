@@ -72,12 +72,82 @@ progress:indeterminate{opacity:.35}
 footer{max-width:1480px;padding:0 28px 26px;margin:auto;display:flex;justify-content:space-between;gap:12px;color:#89939b;font-size:10px}
 @media(max-width:960px){.layout{grid-template-columns:1fr}.panel{order:2}.workspace{order:1}.preview-stage{min-height:280px;max-height:none}#preview{max-height:60vh}}
 @media(max-width:560px){header{padding:18px 14px 14px}.layout{padding:0 12px 24px;gap:12px}.section{padding:15px}.preview-head{padding:13px}.preview-stage{padding:14px;min-height:230px}.preview-foot,.status-area{padding:12px}footer{padding:0 14px 20px}.brand-mark{width:36px;height:36px}}
+
+/* Compact, single-screen editor layout. The rendered animation dimensions are unchanged. */
+body{background:#f6f6f3}
+header{max-width:1440px;padding:14px 22px 11px;align-items:center;min-height:79px}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:0;line-height:1.08}
+.brand-name{font:700 25px/1.06 Georgia,"Times New Roman",serif;letter-spacing:-.6px;color:var(--ink);text-decoration:none}
+.brand-name .brand-gold{color:var(--gold)}
+.brand-name:hover,.brand-name:focus-visible{color:var(--blue);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.brand-name:hover .brand-gold,.brand-name:focus-visible .brand-gold{color:var(--gold)}
+.brand-project{font:600 15px/1.35 Georgia,"Times New Roman",serif;color:var(--ink);margin-top:3px}
+.brand-project:hover,.brand-project:focus-visible{color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+.header-nav{display:flex;align-items:center;gap:22px}
+.header-caption{font-size:11px;color:var(--muted)}
+.layout{max-width:1440px;padding:0 22px 18px;grid-template-columns:minmax(660px,1.7fr) minmax(325px,1fr);align-items:start;gap:14px}
+.panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:12px;background:transparent;border:none;border-radius:0;box-shadow:none;overflow:visible}
+.section{padding:12px 14px 13px;border:1px solid var(--line);background:#fff;border-radius:14px;min-width:0}
+.section:last-child{border-bottom:1px solid var(--line)}
+.section h2{margin:0 0 10px;font-size:11px;letter-spacing:.05em}
+.field label,.field-label{font-size:11px;margin-bottom:4px}
+.row{gap:8px}
+input[type=number],input[type=text],select{padding:7px 9px;min-height:34px}
+input[type=color]{height:32px}
+.duration input{font-size:15px}
+.duration-unit{font-size:9px;margin-top:2px}
+.help{font-size:10px;line-height:1.4;margin:5px 0 0}
+.palette-grid{gap:5px}
+.palette-option{padding:5px 2px;font-size:10px;line-height:1.3;border-radius:8px}
+.palette-chip{margin-bottom:3px}
+.palette-chip i{height:12px;width:12px}
+.color-grid{gap:5px}
+.color-grid label{font-size:9px}
+.color-grid input{margin-top:4px}
+.btn{padding:8px 10px;border-radius:8px;font-size:11px}
+.action-row{gap:6px}
+.action-row .btn{flex:1;white-space:nowrap}
+.export-grid{gap:6px}
+.export-subsection{margin-top:15px;padding-top:12px;border-top:1px solid #edf0f3}
+.export-subsection h2{margin-bottom:9px}
+.preview-card{width:100%;max-width:510px;justify-self:center;align-self:start}
+.preview-head{padding:11px 13px}
+.preview-title{font-size:12px}
+.preview-stage{min-height:0;height:310px;max-height:none;padding:16px;overflow:hidden}
+#preview{max-width:100%;max-height:265px;width:auto;height:auto;box-shadow:0 6px 17px rgba(25,40,55,.11)}
+.preview-foot{padding:9px 13px}
+.status-area{padding:10px 13px 12px}
+.meta{font-size:10px}
+footer{max-width:1440px;padding:0 22px 14px}
+@media(max-width:1150px){
+ .layout{max-width:940px;grid-template-columns:1fr}
+ .panel{order:2}
+ .workspace{order:1}
+ .preview-card{max-width:none}
+ .preview-stage{height:265px;min-height:0;max-height:none}
+ #preview{max-height:225px}
+}
+@media(max-width:680px){
+ header{padding:13px 14px 12px;min-height:67px}
+ .brand-name{font-size:22px}
+ .brand-project{font-size:14px}
+ .header-caption{display:none}
+ .header-nav{gap:8px}
+ .layout{padding:0 12px 18px;gap:12px}
+ .panel{grid-template-columns:1fr;gap:10px}
+ .section{padding:12px}
+ .preview-head{padding:10px 12px}
+ .preview-stage{height:215px;padding:12px;min-height:0}
+ #preview{max-height:190px}
+ .preview-foot,.status-area{padding:10px 12px}
+ footer{padding:0 14px 16px}
+}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand"><div class="brand-mark">CS</div><div><h1>Countdown Studio</h1><p>PowerPoint 倒计时动画生成器</p></div></div>
-  <a class="top-link" href="https://plastocyanin.org/projects/">Workshop ↗</a>
+  <div class="brand"><a class="brand-name" href="https://plastocyanin.org/" aria-label="plastocyanin 首页">plast<span class="brand-gold">o</span>cyanin<span class="brand-gold">.</span></a><a class="brand-project" href="https://plastocyanin.org/countdown-studio/">Countdown Studio</a></div>
+  <div class="header-nav"><span class="header-caption">PowerPoint 倒计时动画生成器</span><a class="top-link" href="https://plastocyanin.org/projects/">Workshop ↗</a></div>
 </header>
 <main class="layout">
   <aside class="panel" aria-label="倒计时设置">
@@ -115,19 +185,19 @@ footer{max-width:1480px;padding:0 28px 26px;margin:auto;display:flex;justify-con
     <section class="section">
       <h2>03 / Trim & output</h2>
       <label class="checkline"><input id="trimEnabled" type="checkbox" checked> 自动裁剪内容周围的透明留白</label>
-      <div class="field" style="margin-top:12px"><label for="padding">裁剪后留白：<strong id="paddingValue">28 px</strong></label><input id="padding" type="range" min="0" max="120" step="2" value="28"><p class="help">自动识别卡片、数字、圆环、文字和进度条的可见边界。导出只保留内容及设定留白，不再输出整张 16:9 画布。</p></div>
-      <div class="field" style="margin-top:14px"><label for="scale">导出清晰度</label><select id="scale"><option value="1">标准 · 1×</option><option value="1.5">高清 · 1.5×</option><option value="2">超清 · 2×</option></select><p class="help">按内容裁剪后输出；清晰度为内部绘制倍率，与 PPT 页面比例无关。</p></div>
+      <div class="field" style="margin-top:12px"><label for="padding">裁剪后留白：<strong id="paddingValue">28 px</strong></label><input id="padding" type="range" min="0" max="120" step="2" value="28"><p class="help">导出仅保留内容和设定边距。</p></div>
+      <div class="field" style="margin-top:14px"><label for="scale">导出清晰度</label><select id="scale"><option value="1">标准 · 1×</option><option value="1.5">高清 · 1.5×</option><option value="2">超清 · 2×</option></select></div>
       <div class="field" style="margin-top:12px"><label for="videoFps">MP4 帧率</label><select id="videoFps"><option value="15">15 fps · 文件较小</option><option value="24">24 fps · 流畅</option><option value="30" selected>30 fps · 推荐</option></select></div>
     </section>
     <section class="section">
       <h2>04 / Preview controls</h2>
       <div class="action-row"><button class="btn btn-primary" id="startBtn">开始 / 继续</button><button class="btn" id="pauseBtn">暂停</button><button class="btn" id="resetBtn">重置</button></div>
-      <p class="help">预览使用真实时间倒计时；文件导出通过逐帧渲染生成，不必等待计时结束。</p>
-    </section>
-    <section class="section">
-      <h2>05 / Export</h2>
+      
+      <div class="export-subsection">
+        <h2>05 / Export</h2>
       <div class="export-grid"><button class="btn btn-export" id="gifBtn">导出透明 GIF</button><button class="btn btn-export" id="mp4Btn">快速导出 MP4</button></div>
-      <p class="help">GIF 适合短动画，透明区域采用二值透明；MP4 不支持透明通道，会使用背景色填充。首次导出需要联网加载编码模块。</p>
+        <p class="help">GIF 可透明；MP4 使用背景色。首次编码需联网。</p>
+      </div>
     </section>
   </aside>
   <section class="workspace preview-card">
