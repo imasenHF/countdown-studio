@@ -15,7 +15,7 @@ Generate compact countdown animation assets for insertion as individual componen
 - Desktop UI uses a compact two-column grid of tool cards and a smaller preview to keep all primary controls within the first viewport on common desktop resolutions; smaller screens stack the panels.
 - Upper-left branding uses the exact shared Workshop brand markup, including the official 48 px `imasen-phi-64.png` symbol, Georgia wordmark, and gold `o` / terminal period; the `Countdown Studio` subtitle follows the same font sizing and alignment as the Workshop subtitle.
 - Animation style, export background, resolution, and MP4 frame rate use palette-card-style button groups instead of visible dropdowns. The selected button and rendering/export settings remain synchronized.
-- Footer uses the shared two-column copyright layout, displays the current year dynamically, names `hyphoon` as the public rights holder, and separates the copyright notice from the GitHub source link.
+- Footer now reuses the NMR Atlas / SpinFront structure and spacing: shared `plastocyanin.` wordmark, `Countdown Studio` project link, `PowerPoint countdown animation` descriptor, current-year `© YYYY wuhaifeng@ustc.edu.cn. All rights reserved.` line, and project-specific Chinese notice. No separate GitHub source-link row.
 - GIF export uses `gif.js` and binary transparency; MP4 export uses WebCodecs and `mp4-muxer` for offline timestamped encoding.
 - MP4 uses a solid background because common H.264 MP4 output does not preserve alpha.
 
