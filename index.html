@@ -258,6 +258,12 @@ function applyPalette(name){
 }
 function clearPalette(){activePalette=null;document.querySelectorAll(".palette-option").forEach(b=>b.classList.remove("active"));}
 function loadScript(src){return new Promise((resolve,reject)=>{if(window.GIF){resolve();return;}const el=document.createElement("script");el.src=src;el.onload=resolve;el.onerror=()=>reject(new Error("编码脚本加载失败："+src));document.head.appendChild(el);});}
+async function loadGifWorker(){
+ const url="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js";
+ const response=await fetch(url,{mode:"cors"});
+ if(!response.ok)throw new Error("GIF worker 下载失败："+response.status);
+ return URL.createObjectURL(new Blob([await response.text()],{type:"application/javascript"}));
+}
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 function fileName(ext,w,h){return "countdown_"+totalSeconds+"s_"+w+"x"+h+"."+ext;}
 function setBusy(value){busy=value;document.querySelectorAll("input,select,button").forEach(el=>{el.disabled=value;});}
@@ -268,25 +274,42 @@ function gifKeyFrame(frame){
  x.putImageData(img,0,0);return c;
 }
 async function exportGif(){
- if(busy)return;totalSeconds=readDuration();if(totalSeconds>180){setStatus("GIF 导出目前限制为 180 秒；更长的倒计时请使用 MP4。");return;}
+ if(busy)return;
+ totalSeconds=readDuration();
+ if(totalSeconds>180){setStatus("GIF 导出目前限制为 180 秒；更长的倒计时请使用 MP4。");return;}
  const scale=Number($("scale").value),fps=8,frames=Math.ceil(totalSeconds*fps)+1,bounds=computeBaseBounds(totalSeconds);
+ let workerUrl=null;
  setBusy(true);$("previewState").textContent="EXPORT";
  try{
   setStatus("正在加载 GIF 编码模块……",0);
   await loadScript("https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js");
+  workerUrl=await loadGifWorker();
   const first=makeFrame(totalSeconds,totalSeconds,scale,false,bounds,true),transparent=$("backgroundMode").value==="transparent";
-  const gif=new window.GIF({workers:2,quality:10,width:first.width,height:first.height,workerScript:"https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",transparent:transparent?0x00ff00:undefined});
+  const gif=new window.GIF({workers:2,quality:10,width:first.width,height:first.height,workerScript:workerUrl,transparent:transparent?0x00ff00:undefined});
   gif.on("progress",p=>setStatus("GIF 编码中："+Math.round(p*100)+"%",p));
-  gif.on("finished",blob=>{downloadBlob(blob,fileName("gif",first.width,first.height));setBusy(false);$("previewState").textContent="READY";setStatus("GIF 已生成。透明 GIF 使用二值透明，边缘平滑度受 GIF 格式限制。",1);});
-  for(let i=0;i<frames;i++){
-   const sec=Math.max(0,totalSeconds-i/fps);
-   let frame=i===0?first:makeFrame(sec,totalSeconds,scale,false,bounds,true);
-   if(transparent)frame=gifKeyFrame(frame);
-   gif.addFrame(frame,{delay:1000/fps,copy:true});
-   if(i%16===0){setStatus("准备 GIF 帧："+(i+1)+" / "+frames, i/frames);await new Promise(r=>setTimeout(r,0));}
-  }
-  gif.render();
- }catch(error){setBusy(false);$("previewState").textContent="READY";setStatus("GIF 导出失败："+(error.message||error));}
+  const completed=new Promise((resolve,reject)=>{
+   gif.on("finished",blob=>{
+    downloadBlob(blob,fileName("gif",first.width,first.height));
+    setStatus("GIF 已生成。透明 GIF 使用二值透明，边缘平滑度受 GIF 格式限制。",1);
+    resolve();
+   });
+   gif.on("abort",()=>reject(new Error("GIF 编码已中止。")));
+   for(let i=0;i<frames;i++){
+    const sec=Math.max(0,totalSeconds-i/fps);
+    let frame=i===0?first:makeFrame(sec,totalSeconds,scale,false,bounds,true);
+    if(transparent)frame=gifKeyFrame(frame);
+    gif.addFrame(frame,{delay:1000/fps,copy:true});
+   }
+   gif.render();
+  });
+  setStatus("已准备 "+frames+" 帧，正在编码 GIF……",0);
+  await completed;
+ }catch(error){
+  setStatus("GIF 导出失败："+(error.message||error));
+ }finally{
+  if(workerUrl)URL.revokeObjectURL(workerUrl);
+  setBusy(false);$("previewState").textContent="READY";
+ }
 }
 async function exportMp4(){
  if(busy)return;totalSeconds=readDuration();if(totalSeconds>600){setStatus("MP4 导出目前限制为 10 分钟。");return;}
