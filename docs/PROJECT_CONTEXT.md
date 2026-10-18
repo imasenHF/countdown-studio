@@ -22,6 +22,13 @@ Generate compact countdown animation assets for insertion as individual componen
 - WebCodecs/H.264 availability depends on browser and device. Latest Chrome or Edge over HTTPS is recommended.
 - Browser encoding performance, GIF edge appearance, MP4 decoding in PowerPoint, and all palette/style crop bounds still require interactive acceptance testing.
 
+## Verification
+
+- GitHub Actions validates the inline JavaScript syntax and checks that referenced DOM IDs exist before publishing.
+- The deployment workflow performs an HTTP smoke test against the published URL; the latest run passed.
+- The main site's Jekyll build and deployment for the Workshop entry passed.
+- Manual browser interaction, transparent GIF export, MP4 encoding on multiple devices, and playback in PowerPoint have not yet been tested.
+
 ## Deployment
 - Source repository: https://github.com/imasenHF/countdown-studio
 - GitHub Pages is deployed by `.github/workflows/pages.yml`.
