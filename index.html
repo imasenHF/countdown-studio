@@ -201,6 +201,7 @@ function alphaBounds(canvas){
  return {x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
 }
 function computeBaseBounds(total){
+ if(scene.width!==BASE_W)scene.width=BASE_W;if(scene.height!==BASE_H)scene.height=BASE_H;
  if(!$("trimEnabled").checked)return {x:0,y:0,w:BASE_W,h:BASE_H};
  drawScene(sceneCtx,total,total,true);
  const b=alphaBounds(scene),p=Number($("padding").value)||0;
