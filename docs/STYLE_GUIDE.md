@@ -8,6 +8,11 @@
 - All former dropdown controls (animation style, export background, export resolution, and MP4 frame rate) are represented by compact button groups styled like the palette cards. Each group has one active button with `aria-pressed`; changes synchronize with the underlying setting used by rendering and export. There should be no visible native select menus.
 - The checkerboard denotes transparency in the preview only; it must never be included in exported files.
 
+## Footer and copyright
+- Use the shared plastocyanin footer structure: a 2 px dark blue-gray separator, left-side project identity, and right-aligned copyright details on desktop; stack and left-align the content on mobile.
+- Show a dynamic current year and the public rights holder as `© YYYY hyphoon. All rights reserved.`. Put the project-specific Chinese copyright notice on its own line, and keep the GitHub source link separate from the copyright statement.
+- The repository currently has no license file. Do not imply that public source visibility grants redistribution or commercial-use rights.
+
 ## Content trimming
 - The main output canvas is an internal rendering surface, not the final exported frame.
 - Detect visible alpha pixels, then crop to their bounding rectangle with a user-controlled padding margin.
