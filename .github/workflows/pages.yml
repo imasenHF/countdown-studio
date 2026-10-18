@@ -38,6 +38,48 @@ jobs:
           assert not missing, f'Missing DOM IDs: {missing}'
           PY
           node --check /tmp/countdown-studio-check.js
+      - name: Verify compact desktop viewport
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('index.html').read_text(encoding='utf-8')
+          probe = """<script>
+          addEventListener('load', () => {
+            const controls = document.querySelector('aside.panel');
+            const cards = controls.querySelectorAll('.section');
+            const previewCard = document.querySelector('.preview-card');
+            const previewStage = document.querySelector('.preview-stage');
+            const brand = document.querySelector('.brand-name .brand-gold');
+            const result = {
+              viewport: innerHeight,
+              controlsBottom: Math.round(controls.getBoundingClientRect().bottom),
+              cards: cards.length,
+              previewWidth: Math.round(previewCard.getBoundingClientRect().width),
+              previewHeight: Math.round(previewStage.getBoundingClientRect().height),
+              brandGold: getComputedStyle(brand).color
+            };
+            const pass = result.cards === 4 &&
+                         result.controlsBottom <= result.viewport &&
+                         result.previewWidth <= 520 &&
+                         result.previewHeight <= 320 &&
+                         result.brandGold === 'rgb(182, 140, 55)';
+            document.body.dataset.layoutCheck = pass ? 'pass' : 'fail';
+            document.body.dataset.layoutMetrics = JSON.stringify(result);
+          });
+          </script>"""
+          Path('/tmp/countdown-layout-probe.html').write_text(html.replace('</body>', probe + '</body>'), encoding='utf-8')
+          PY
+          chrome="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$chrome" ]; then
+            echo "Chrome/Chromium unavailable for layout smoke test" >&2
+            exit 1
+          fi
+          "$chrome" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --window-size=1440,900 --virtual-time-budget=1800 --dump-dom file:///tmp/countdown-layout-probe.html > /tmp/countdown-layout-result.html 2>/tmp/countdown-chrome-stderr.log
+          grep -o 'data-layout-metrics="[^"]*"' /tmp/countdown-layout-result.html | head -1 || true
+          if ! grep -q 'data-layout-check="pass"' /tmp/countdown-layout-result.html; then
+            echo "Desktop first-viewport layout validation failed" >&2
+            exit 1
+          fi
       - name: Prepare static site
         run: |
           mkdir -p _site
