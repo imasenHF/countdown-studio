@@ -51,6 +51,11 @@ jobs:
             const previewStage = document.querySelector('.preview-stage');
             const brand = document.querySelector('.section-brand-title .section-brand-dot');
             const brandIcon = document.querySelector('.section-brand-icon');
+            const footer = document.querySelector('.site-footer');
+            const copyright = document.querySelector('.site-footer-copyright');
+            const copyrightYear = document.querySelector('#current-year');
+            const copyrightNotice = document.querySelector('.site-footer-notice');
+            const sourceLink = document.querySelector('.site-footer-source a');
             const groups = [...document.querySelectorAll('.choice-grid')];
             const visibleSelects = [...document.querySelectorAll('select')].filter(el => !el.hidden).length;
             const choiceInteractions = groups.length === 4 && groups.every(group => {
@@ -73,7 +78,12 @@ jobs:
               brandIcon: brandIcon.getAttribute('src'),
               choiceGroups: groups.length,
               visibleSelects: visibleSelects,
-              choiceInteractions: choiceInteractions
+              choiceInteractions: choiceInteractions,
+              copyrightText: copyright.textContent.trim(),
+              copyrightYear: copyrightYear.textContent,
+              copyrightNotice: copyrightNotice.textContent.trim(),
+              sourceHref: sourceLink.getAttribute('href'),
+              footerBorderWidth: getComputedStyle(footer).borderTopWidth
             };
             const pass = result.cards === 4 &&
                          result.controlsBottom <= result.viewport &&
@@ -83,7 +93,12 @@ jobs:
                          result.brandIcon.includes('/assets/images/imasen_phi_logo/imasen-phi-64.png') &&
                          result.visibleSelects === 0 &&
                          result.choiceGroups === 4 &&
-                         result.choiceInteractions;
+                         result.choiceInteractions &&
+                         result.copyrightText === '© ' + new Date().getFullYear() + ' hyphoon. All rights reserved.' &&
+                         result.copyrightYear === String(new Date().getFullYear()) &&
+                         result.copyrightNotice.includes('未经许可不得复制、转载或用于商业用途') &&
+                         result.sourceHref === 'https://github.com/imasenHF/countdown-studio' &&
+                         result.footerBorderWidth === '2px';
             document.body.dataset.layoutCheck = pass ? 'pass' : 'fail';
             document.body.dataset.layoutMetrics = JSON.stringify(result);
           });
