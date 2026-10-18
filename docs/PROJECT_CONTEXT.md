@@ -29,6 +29,7 @@ Generate compact countdown animation assets for insertion as individual componen
 
 - GitHub Actions validates the inline JavaScript syntax and checks that referenced DOM IDs exist before publishing.
 - The deployment workflow performs an HTTP smoke test against the published URL; the latest run passed.
+- Headless Chrome at 1440 × 900 verifies the official logo asset path, brand gold color, four button-based option groups, absence of visible native selects, option-to-setting synchronization, preview bounds, and that the editor fits in the first viewport.
 - The main site's Jekyll build and deployment for the Workshop entry passed.
 - Manual browser interaction, transparent GIF export, MP4 encoding on multiple devices, and playback in PowerPoint have not yet been tested.
 
