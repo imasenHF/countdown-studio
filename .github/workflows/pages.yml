@@ -30,10 +30,10 @@ jobs:
           html = Path('index.html').read_text(encoding='utf-8')
           scripts = re.findall(r'<script>(.*?)</script>', html, re.S)
           assert scripts, 'No inline JavaScript found'
-          script = '\\n'.join(scripts)
+          script = '\n'.join(scripts)
           Path('/tmp/countdown-studio-check.js').write_text(script, encoding='utf-8')
-          ids = set(re.findall(r'id=\"([^\"]+)\"', html))
-          refs = set(re.findall(r'\\$\\(\"([^\"]+)\"\\)', script))
+          ids = set(re.findall(r'id="([^"]+)"', html))
+          refs = set(re.findall(r'\$\("([^"]+)"\)', script))
           missing = sorted(refs - ids)
           assert not missing, f'Missing DOM IDs: {missing}'
           PY
