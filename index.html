@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#203139">
+<meta name="description" content="Browser-based countdown animation generator for PowerPoint. Trim transparent margins and export GIF or MP4.">
+<title>Countdown Studio · PowerPoint Animation</title>
+<style>
+:root{color-scheme:light;--ink:#203139;--muted:#75818d;--line:#dce3e9;--paper:#f4f6f7;--panel:#fff;--blue:#355c7d;--gold:#b68c37;--accent:#5be0c1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled,input:disabled,select:disabled{opacity:.55;cursor:wait}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+header{max-width:1480px;margin:auto;padding:24px 28px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{width:42px;height:42px;border-radius:13px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:800;letter-spacing:-1px}
+h1{font-size:22px;line-height:1.2;margin:0;font-weight:750;letter-spacing:-.4px}
+header p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.top-link{font-size:12px;font-weight:700;white-space:nowrap}
+.layout{max-width:1480px;margin:0 auto;padding:0 28px 34px;display:grid;grid-template-columns:minmax(290px,360px) minmax(0,1fr);gap:18px;align-items:start}
+.panel,.preview-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 24px rgba(31,48,62,.035)}
+.panel{overflow:hidden}
+.section{padding:18px 18px 19px;border-bottom:1px solid #edf0f3}
+.section:last-child{border-bottom:0}
+.section h2{margin:0 0 14px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#53616c}
+.field{min-width:0}
+.field label,.field-label{display:block;font-size:12px;font-weight:650;color:#46545f;margin-bottom:6px}
+.row{display:flex;gap:10px;align-items:end}
+.row>.field{flex:1;min-width:0}
+input[type=number],input[type=text],select{width:100%;min-width:0;border:1px solid #d7dfe6;border-radius:9px;background:#fff;color:var(--ink);padding:9px 10px;outline:none}
+input:focus,select:focus,button:focus-visible{outline:2px solid #80a9cc;outline-offset:2px}
+input[type=color]{width:100%;height:38px;padding:3px;border:1px solid #d7dfe6;border-radius:9px;background:#fff}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.duration input{text-align:center;font-variant-numeric:tabular-nums;font-weight:750;font-size:16px}
+.duration-unit{font-size:10px;color:var(--muted);margin-top:4px;text-align:center}
+.help{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 0}
+.checkline{display:flex;align-items:center;gap:8px;font-size:12px;color:#46545f}
+.checkline input{accent-color:var(--blue)}
+.palette-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.palette-option{min-width:0;border:1px solid #dce3e9;border-radius:10px;background:#fff;padding:7px 5px 8px;text-align:center;color:var(--ink);font-size:10px;font-weight:650}
+.palette-option.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(53,92,125,.12);background:#f5f8fb}
+.palette-chip{display:flex;justify-content:center;gap:3px;margin-bottom:5px}
+.palette-chip i{display:block;width:13px;height:16px;border-radius:4px;border:1px solid rgba(20,30,50,.1)}
+.color-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.color-grid label{font-size:10px;text-align:center;color:var(--muted)}
+.color-grid input{margin-top:5px}
+.action-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #d7dfe6;border-radius:10px;background:#fff;padding:10px 13px;font-weight:700;color:var(--ink)}
+.btn:hover{background:#f5f8fb}
+.btn-primary{background:#355c7d;color:#fff;border-color:#355c7d}
+.btn-primary:hover{background:#294965}
+.btn-export{background:#203139;color:#fff;border-color:#203139}
+.btn-export:hover{background:#314751}
+.btn-small{padding:7px 9px;font-size:11px}
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.preview-card{min-width:0;overflow:hidden}
+.preview-head{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #edf0f3}
+.preview-title{font-size:13px;font-weight:750}
+.status-pill{font-size:10px;font-weight:800;letter-spacing:.08em;padding:5px 8px;border-radius:999px;background:#eef3f6;color:#526575}
+.preview-stage{min-height:420px;max-height:74vh;padding:28px;display:flex;align-items:center;justify-content:center;overflow:auto;background-color:#fff;background-image:linear-gradient(45deg,#e9edf2 25%,transparent 25%),linear-gradient(-45deg,#e9edf2 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9edf2 75%),linear-gradient(-45deg,transparent 75%,#e9edf2 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}
+#preview{display:block;max-width:100%;max-height:68vh;width:auto;height:auto;box-shadow:0 10px 28px rgba(25,40,55,.12);border-radius:2px}
+.preview-foot{padding:13px 18px;border-top:1px solid #edf0f3;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.meta{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.status-area{padding:13px 18px 16px;border-top:1px solid #edf0f3}
+.status-line{font-size:11px;color:#52616d;min-height:18px}
+progress{width:100%;height:4px;display:block;margin-top:8px;accent-color:var(--blue)}
+progress:indeterminate{opacity:.35}
+footer{max-width:1480px;padding:0 28px 26px;margin:auto;display:flex;justify-content:space-between;gap:12px;color:#89939b;font-size:10px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.panel{order:2}.workspace{order:1}.preview-stage{min-height:280px;max-height:none}#preview{max-height:60vh}}
+@media(max-width:560px){header{padding:18px 14px 14px}.layout{padding:0 12px 24px;gap:12px}.section{padding:15px}.preview-head{padding:13px}.preview-stage{padding:14px;min-height:230px}.preview-foot,.status-area{padding:12px}footer{padding:0 14px 20px}.brand-mark{width:36px;height:36px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="brand-mark">CS</div><div><h1>Countdown Studio</h1><p>PowerPoint 倒计时动画生成器</p></div></div>
+  <a class="top-link" href="https://plastocyanin.org/projects/">Workshop ↗</a>
+</header>
+<main class="layout">
+  <aside class="panel" aria-label="倒计时设置">
+    <section class="section">
+      <h2>01 / Timer & style</h2>
+      <div class="row duration">
+        <div class="field"><label for="minutes">倒计时分钟</label><input id="minutes" type="number" min="0" max="99" step="1" value="1"><div class="duration-unit">MINUTES</div></div>
+        <div class="field"><label for="seconds">秒</label><input id="seconds" type="number" min="0" max="59" step="1" value="0"><div class="duration-unit">SECONDS</div></div>
+      </div>
+      <div class="field" style="margin-top:14px"><label for="style">动画样式</label><select id="style"><option value="flip">数字卡片 + 进度条</option><option value="ring">圆环倒计时</option><option value="minimal">极简数字</option><option value="bar">数字 + 横向进度条</option></select></div>
+      <div class="field" style="margin-top:12px"><label for="labelText">辅助文字</label><input id="labelText" type="text" value="TIME REMAINING" maxlength="36"></div>
+      <label class="checkline" style="margin-top:10px"><input id="showLabel" type="checkbox" checked> 显示辅助文字</label>
+    </section>
+    <section class="section">
+      <h2>02 / Palette</h2>
+      <div class="palette-grid" id="paletteGrid">
+        <button type="button" class="palette-option active" data-palette="mint"><span class="palette-chip"><i style="background:#fff"></i><i style="background:#5be0c1"></i><i style="background:#202b3d"></i></span>深海薄荷</button>
+        <button type="button" class="palette-option" data-palette="academic"><span class="palette-chip"><i style="background:#17365d"></i><i style="background:#367af6"></i><i style="background:#fff"></i></span>学术蓝白</button>
+        <button type="button" class="palette-option" data-palette="gold"><span class="palette-chip"><i style="background:#fff2cf"></i><i style="background:#e8be68"></i><i style="background:#282828"></i></span>香槟金</button>
+        <button type="button" class="palette-option" data-palette="purple"><span class="palette-chip"><i style="background:#f4eeff"></i><i style="background:#b59bff"></i><i style="background:#28213f"></i></span>紫夜极光</button>
+        <button type="button" class="palette-option" data-palette="forest"><span class="palette-chip"><i style="background:#e9fff3"></i><i style="background:#69d9a7"></i><i style="background:#1c3d31"></i></span>森林薄荷</button>
+        <button type="button" class="palette-option" data-palette="coral"><span class="palette-chip"><i style="background:#fff5f0"></i><i style="background:#ff8a72"></i><i style="background:#43303a"></i></span>珊瑚暖调</button>
+        <button type="button" class="palette-option" data-palette="redwhite"><span class="palette-chip"><i style="background:#1d2939"></i><i style="background:#e5484d"></i><i style="background:#fff"></i></span>红白高对比</button>
+        <button type="button" class="palette-option" data-palette="blue"><span class="palette-chip"><i style="background:#f4f8ff"></i><i style="background:#4ca5ff"></i><i style="background:#12294a"></i></span>深蓝电光</button>
+        <button type="button" class="palette-option" data-palette="gray"><span class="palette-chip"><i style="background:#1f2937"></i><i style="background:#64748b"></i><i style="background:#fff"></i></span>极简灰蓝</button>
+      </div>
+      <div class="color-grid" style="margin-top:14px">
+        <label>数字<input id="textColor" type="color" value="#ffffff"></label>
+        <label>进度<input id="accentColor" type="color" value="#5be0c1"></label>
+        <label>卡片<input id="cardColor" type="color" value="#202b3d"></label>
+        <label>背景<input id="bgColor" type="color" value="#101827"></label>
+      </div>
+      <div class="field" style="margin-top:12px"><label for="backgroundMode">导出背景</label><select id="backgroundMode"><option value="transparent">透明（适合叠加 PPT）</option><option value="solid">纯色背景</option></select></div>
+    </section>
+    <section class="section">
+      <h2>03 / Trim & output</h2>
+      <label class="checkline"><input id="trimEnabled" type="checkbox" checked> 自动裁剪内容周围的透明留白</label>
+      <div class="field" style="margin-top:12px"><label for="padding">裁剪后留白：<strong id="paddingValue">28 px</strong></label><input id="padding" type="range" min="0" max="120" step="2" value="28"><p class="help">自动识别卡片、数字、圆环、文字和进度条的可见边界。导出只保留内容及设定留白，不再输出整张 16:9 画布。</p></div>
+      <div class="field" style="margin-top:14px"><label for="scale">导出清晰度</label><select id="scale"><option value="1">标准 · 1×</option><option value="1.5">高清 · 1.5×</option><option value="2">超清 · 2×</option></select><p class="help">按内容裁剪后输出；清晰度为内部绘制倍率，与 PPT 页面比例无关。</p></div>
+      <div class="field" style="margin-top:12px"><label for="videoFps">MP4 帧率</label><select id="videoFps"><option value="15">15 fps · 文件较小</option><option value="24">24 fps · 流畅</option><option value="30" selected>30 fps · 推荐</option></select></div>
+    </section>
+    <section class="section">
+      <h2>04 / Preview controls</h2>
+      <div class="action-row"><button class="btn btn-primary" id="startBtn">开始 / 继续</button><button class="btn" id="pauseBtn">暂停</button><button class="btn" id="resetBtn">重置</button></div>
+      <p class="help">预览使用真实时间倒计时；文件导出通过逐帧渲染生成，不必等待计时结束。</p>
+    </section>
+    <section class="section">
+      <h2>05 / Export</h2>
+      <div class="export-grid"><button class="btn btn-export" id="gifBtn">导出透明 GIF</button><button class="btn btn-export" id="mp4Btn">快速导出 MP4</button></div>
+      <p class="help">GIF 适合短动画，透明区域采用二值透明；MP4 不支持透明通道，会使用背景色填充。首次导出需要联网加载编码模块。</p>
+    </section>
+  </aside>
+  <section class="workspace preview-card">
+    <div class="preview-head"><div><div class="preview-title">Live preview / 内容裁剪预览</div><div class="meta" style="margin-top:3px">透明区域以棋盘格显示，棋盘格不会导出</div></div><span class="status-pill" id="previewState">READY</span></div>
+    <div class="preview-stage"><canvas id="preview" width="600" height="360" aria-label="裁剪后的倒计时动画预览"></canvas></div>
+    <div class="preview-foot"><span class="meta" id="dimensionInfo">输出尺寸计算中</span><span class="meta" id="timeInfo">01:00</span></div>
+    <div class="status-area"><div class="status-line" id="status" role="status" aria-live="polite">就绪。选择样式与配色后即可预览或导出。</div><progress id="progress" value="0" max="1"></progress></div>
+  </section>
+</main>
+<footer><span>Countdown Studio · Browser-side rendering</span><span>by hyphoon · <a href="https://github.com/imasenHF/countdown-studio">Source on GitHub</a></span></footer>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const BASE_W=1280,BASE_H=720;
+const PALETTES={
+ mint:{text:"#FFFFFF",accent:"#5BE0C1",card:"#202B3D",bg:"#101827",muted:"#AAB5C6",track:"#657086",mode:"transparent"},
+ academic:{text:"#17365D",accent:"#367AF6",card:"#FFFFFF",bg:"#F3F7FD",muted:"#718096",track:"#D3DCE9",mode:"solid"},
+ gold:{text:"#FFF2CF",accent:"#E8BE68",card:"#282828",bg:"#171717",muted:"#C6BCA7",track:"#5B5548",mode:"solid"},
+ purple:{text:"#F4EEFF",accent:"#B59BFF",card:"#28213F",bg:"#19152D",muted:"#BDB2D8",track:"#5B5279",mode:"solid"},
+ forest:{text:"#E9FFF3",accent:"#69D9A7",card:"#1C3D31",bg:"#102A22",muted:"#A9D0BC",track:"#4B6B5C",mode:"solid"},
+ coral:{text:"#FFF5F0",accent:"#FF8A72",card:"#43303A",bg:"#2B2027",muted:"#D6B8C2",track:"#71525F",mode:"solid"},
+ redwhite:{text:"#1D2939",accent:"#E5484D",card:"#F1F4F8",bg:"#FFFFFF",muted:"#657184",track:"#D8DEE8",mode:"solid"},
+ blue:{text:"#F4F8FF",accent:"#4CA5FF",card:"#12294A",bg:"#0B1830",muted:"#AAC4E8",track:"#354F74",mode:"solid"},
+ gray:{text:"#1F2937",accent:"#64748B",card:"#FFFFFF",bg:"#F1F3F6",muted:"#6B7280",track:"#D1D5DB",mode:"solid"}
+};
+let totalSeconds=60,remaining=60,running=false,endAt=0,lastDraw=0,busy=false,boundsDirty=true,baseBounds=null,activePalette="mint";
+const scene=document.createElement("canvas");scene.width=BASE_W;scene.height=BASE_H;
+const sceneCtx=scene.getContext("2d",{willReadFrequently:true});
+function clamp(v,min,max){return Math.min(max,Math.max(min,v));}
+function getSettings(){return {style:$("style").value,label:$("labelText").value.trim(),showLabel:$("showLabel").checked,text:$("textColor").value,accent:$("accentColor").value,card:$("cardColor").value,bg:$("bgColor").value,muted:(PALETTES[activePalette]||PALETTES.mint).muted,track:(PALETTES[activePalette]||PALETTES.mint).track,bgMode:$("backgroundMode").value,trim:$("trimEnabled").checked,padding:Number($("padding").value)||0};}
+function roundRect(ctx,x,y,w,h,r,fill,stroke){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}}
+function drawScene(ctx,seconds,total,probeWide){
+ const canvas=ctx.canvas,sx=canvas.width/BASE_W,sy=canvas.height/BASE_H;
+ ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.setTransform(sx,0,0,sy,0,0);
+ const s=getSettings(),cx=BASE_W/2,cy=BASE_H/2,mm=String(Math.floor(seconds/60)).padStart(2,"0"),ss=String(Math.floor(seconds%60)).padStart(2,"0");
+ const clock=probeWide?"88:88":mm+":"+ss,elapsed=1-clamp(seconds/Math.max(1,total),0,1),left=clamp(seconds/Math.max(1,total),0,1);
+ const labelY=(y,size)=>{if(s.showLabel&&s.label){ctx.fillStyle=s.muted;ctx.font="700 "+size+"px Inter, Arial, sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(s.label.toUpperCase(),cx,y,BASE_W*.82);}};
+ ctx.save();ctx.lineJoin="round";ctx.lineCap="round";
+ if(s.style==="flip"){
+   const cw=270,ch=258,gap=30,x=cx-(cw*2+gap)/2,y=154;
+   ctx.shadowColor="rgba(16,24,39,.16)";ctx.shadowBlur=12;ctx.shadowOffsetY=5;
+   roundRect(ctx,x,y,cw,ch,20,s.card);roundRect(ctx,x+cw+gap,y,cw,ch,20,s.card);
+   ctx.shadowColor="transparent";ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+   ctx.fillStyle=s.text;ctx.font="750 118px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";ctx.textAlign="center";ctx.textBaseline="middle";
+   ctx.fillText(probeWide?"88":mm,x+cw/2,y+ch*.49,cw-20);ctx.fillText(probeWide?"88":ss,x+cw+gap+cw/2,y+ch*.49,cw-20);
+   labelY(y+ch+40,19);
+   const bx=cx-310,by=530,bw=620,bh=11;roundRect(ctx,bx,by,bw,bh,bh/2,s.track);roundRect(ctx,bx,by,Math.max(bh,bw*elapsed),bh,bh/2,s.accent);
+ }else if(s.style==="ring"){
+   const rad=142,cyRing=320;ctx.lineWidth=18;ctx.strokeStyle=s.track;ctx.beginPath();ctx.arc(cx,cyRing,rad,0,Math.PI*2);ctx.stroke();
+   ctx.strokeStyle=s.accent;ctx.beginPath();ctx.arc(cx,cyRing,rad,-Math.PI/2,-Math.PI/2+Math.PI*2*left);ctx.stroke();
+   ctx.fillStyle=s.text;ctx.font="750 67px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(clock,cx,cyRing,BASE_W*.7);
+   labelY(cyRing+rad+44,18);
+ }else if(s.style==="minimal"){
+   labelY(225,18);
+   ctx.fillStyle=s.text;ctx.font="760 142px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(clock,cx,352,BASE_W*.9);
+   const bx=cx-285,by=465,bw=570,bh=8;roundRect(ctx,bx,by,bw,bh,bh/2,s.track);roundRect(ctx,bx,by,Math.max(bh,bw*elapsed),bh,bh/2,s.accent);
+ }else{
+   ctx.fillStyle=s.text;ctx.font="760 112px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(clock,cx,278,BASE_W*.8);
+   labelY(365,18);
+   const bx=cx-335,by=438,bw=670,bh=15;roundRect(ctx,bx,by,bw,bh,bh/2,s.track);roundRect(ctx,bx,by,Math.max(bh,bw*elapsed),bh,bh/2,s.accent);
+   ctx.fillStyle=s.muted;ctx.font="600 14px Inter, Arial, sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(Math.round(elapsed*100)+"% elapsed",cx,481);
+ }
+ ctx.restore();ctx.setTransform(1,0,0,1,0,0);
+}
+function alphaBounds(canvas){
+ const ctx=canvas.getContext("2d",{willReadFrequently:true}),w=canvas.width,h=canvas.height,data=ctx.getImageData(0,0,w,h).data;
+ let minX=w,minY=h,maxX=-1,maxY=-1;
+ for(let y=0;y<h;y++){let row=y*w*4;for(let x=0;x<w;x++){if(data[row+x*4+3]>8){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;}}}
+ if(maxX<minX)return {x:0,y:0,w:w,h:h};
+ return {x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
+}
+function computeBaseBounds(total){
+ if(!$("trimEnabled").checked)return {x:0,y:0,w:BASE_W,h:BASE_H};
+ drawScene(sceneCtx,total,total,true);
+ const b=alphaBounds(scene),p=Number($("padding").value)||0;
+ const x=Math.max(0,b.x-p),y=Math.max(0,b.y-p),right=Math.min(BASE_W,b.x+b.w+p),bottom=Math.min(BASE_H,b.y+b.h+p);
+ return {x:x,y:y,w:right-x,h:bottom-y};
+}
+function outputDimensions(bounds,scale,even){
+ let w=Math.max(2,Math.round(bounds.w*scale)),h=Math.max(2,Math.round(bounds.h*scale));
+ if(even){if(w%2)w++;if(h%2)h++;}
+ return {w:w,h:h};
+}
+function makeFrame(seconds,total,scale,forVideo,bounds,even){
+ const sw=Math.round(BASE_W*scale),sh=Math.round(BASE_H*scale);
+ if(scene.width!==sw)scene.width=sw;if(scene.height!==sh)scene.height=sh;
+ const ctx=scene.getContext("2d",{willReadFrequently:true});drawScene(ctx,seconds,total,false);
+ const sx=Math.round(bounds.x*scale),sy=Math.round(bounds.y*scale),cropW=Math.round(bounds.w*scale),cropH=Math.round(bounds.h*scale);
+ const dims=outputDimensions(bounds,scale,even),out=document.createElement("canvas");out.width=dims.w;out.height=dims.h;
+ const octx=out.getContext("2d",{alpha:true});
+ const s=getSettings();
+ if(forVideo||s.bgMode==="solid"){octx.fillStyle=s.bg;octx.fillRect(0,0,out.width,out.height);}
+ octx.drawImage(scene,sx,sy,cropW,cropH,0,0,cropW,cropH);
+ return out;
+}
+function setStatus(message,progress){
+ $("status").textContent=message;
+ if(progress===undefined){$("progress").removeAttribute("value");}
+ else{$("progress").value=clamp(progress,0,1);}
+}
+function renderPreview(){
+ if(boundsDirty||!baseBounds){baseBounds=computeBaseBounds(totalSeconds);boundsDirty=false;}
+ const frame=makeFrame(remaining,totalSeconds,1,false,baseBounds,false),p=$("preview");
+ if(p.width!==frame.width)p.width=frame.width;if(p.height!==frame.height)p.height=frame.height;
+ const ctx=p.getContext("2d");ctx.clearRect(0,0,p.width,p.height);ctx.drawImage(frame,0,0);
+ $("dimensionInfo").textContent="裁剪输出 "+frame.width+" × "+frame.height+" px";
+ $("timeInfo").textContent=String(Math.floor(remaining/60)).padStart(2,"0")+":"+String(Math.floor(remaining%60)).padStart(2,"0");
+ $("paddingValue").textContent=$("padding").value+" px";
+}
+function invalidateBounds(){boundsDirty=true;renderPreview();}
+function readDuration(){
+ const m=clamp(Math.floor(Number($("minutes").value)||0),0,99),s=clamp(Math.floor(Number($("seconds").value)||0),0,59);
+ $("minutes").value=m;$("seconds").value=s;
+ return Math.max(1,m*60+s);
+}
+function updateDuration(){totalSeconds=readDuration();remaining=totalSeconds;running=false;boundsDirty=true;renderPreview();setStatus("倒计时时长已更新。");}
+function startPreview(){if(busy)return;if(remaining<=0)remaining=totalSeconds;endAt=performance.now()+remaining*1000;running=true;$("previewState").textContent="RUNNING";setStatus("预览正在运行。");}
+function pausePreview(){if(!running)return;remaining=Math.max(0,(endAt-performance.now())/1000);running=false;$("previewState").textContent="PAUSED";renderPreview();setStatus("预览已暂停。");}
+function resetPreview(){running=false;remaining=totalSeconds;$("previewState").textContent="READY";renderPreview();setStatus("已重置到初始时长。");}
+function loop(now){if(running&&now-lastDraw>45){lastDraw=now;remaining=Math.max(0,(endAt-now)/1000);renderPreview();if(remaining<=0){running=false;$("previewState").textContent="DONE";setStatus("倒计时结束。");}}requestAnimationFrame(loop);}
+function applyPalette(name){
+ const p=PALETTES[name];if(!p)return;activePalette=name;
+ $("textColor").value=p.text;$("accentColor").value=p.accent;$("cardColor").value=p.card;$("bgColor").value=p.bg;$("backgroundMode").value=p.mode;
+ document.querySelectorAll(".palette-option").forEach(b=>b.classList.toggle("active",b.dataset.palette===name));
+ invalidateBounds();
+}
+function clearPalette(){activePalette=null;document.querySelectorAll(".palette-option").forEach(b=>b.classList.remove("active"));}
+function loadScript(src){return new Promise((resolve,reject)=>{if(window.GIF){resolve();return;}const el=document.createElement("script");el.src=src;el.onload=resolve;el.onerror=()=>reject(new Error("编码脚本加载失败："+src));document.head.appendChild(el);});}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+function fileName(ext,w,h){return "countdown_"+totalSeconds+"s_"+w+"x"+h+"."+ext;}
+function setBusy(value){busy=value;document.querySelectorAll("input,select,button").forEach(el=>{el.disabled=value;});}
+function gifKeyFrame(frame){
+ const c=document.createElement("canvas");c.width=frame.width;c.height=frame.height;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(frame,0,0);
+ const img=x.getImageData(0,0,c.width,c.height),d=img.data;
+ for(let i=0;i<d.length;i+=4){if(d[i+3]<128){d[i]=0;d[i+1]=255;d[i+2]=0;}d[i+3]=255;}
+ x.putImageData(img,0,0);return c;
+}
+async function exportGif(){
+ if(busy)return;totalSeconds=readDuration();if(totalSeconds>180){setStatus("GIF 导出目前限制为 180 秒；更长的倒计时请使用 MP4。");return;}
+ const scale=Number($("scale").value),fps=8,frames=Math.ceil(totalSeconds*fps)+1,bounds=computeBaseBounds(totalSeconds);
+ setBusy(true);$("previewState").textContent="EXPORT";
+ try{
+  setStatus("正在加载 GIF 编码模块……",0);
+  await loadScript("https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js");
+  const first=makeFrame(totalSeconds,totalSeconds,scale,false,bounds,true),transparent=$("backgroundMode").value==="transparent";
+  const gif=new window.GIF({workers:2,quality:10,width:first.width,height:first.height,workerScript:"https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",transparent:transparent?0x00ff00:undefined});
+  gif.on("progress",p=>setStatus("GIF 编码中："+Math.round(p*100)+"%",p));
+  gif.on("finished",blob=>{downloadBlob(blob,fileName("gif",first.width,first.height));setBusy(false);$("previewState").textContent="READY";setStatus("GIF 已生成。透明 GIF 使用二值透明，边缘平滑度受 GIF 格式限制。",1);});
+  for(let i=0;i<frames;i++){
+   const sec=Math.max(0,totalSeconds-i/fps);
+   let frame=i===0?first:makeFrame(sec,totalSeconds,scale,false,bounds,true);
+   if(transparent)frame=gifKeyFrame(frame);
+   gif.addFrame(frame,{delay:1000/fps,copy:true});
+   if(i%16===0){setStatus("准备 GIF 帧："+(i+1)+" / "+frames, i/frames);await new Promise(r=>setTimeout(r,0));}
+  }
+  gif.render();
+ }catch(error){setBusy(false);$("previewState").textContent="READY";setStatus("GIF 导出失败："+(error.message||error));}
+}
+async function exportMp4(){
+ if(busy)return;totalSeconds=readDuration();if(totalSeconds>600){setStatus("MP4 导出目前限制为 10 分钟。");return;}
+ if(!("VideoEncoder" in window)||!("VideoFrame" in window)){setStatus("当前浏览器不支持 WebCodecs。请使用最新版 Chrome 或 Edge；本工具不会退回到真实时间录制。");return;}
+ const scale=Number($("scale").value),fps=Number($("videoFps").value),frameCount=totalSeconds*fps+1;
+ if(frameCount>18001){setStatus("帧数超出当前上限，请降低时长或帧率。");return;}
+ const bounds=computeBaseBounds(totalSeconds),first=makeFrame(totalSeconds,totalSeconds,scale,true,bounds,true),width=first.width,height=first.height;
+ setBusy(true);$("previewState").textContent="EXPORT";let encoder=null;
+ try{
+  setStatus("正在加载 MP4 封装模块……",0);
+  const mod=await import("https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.1/build/mp4-muxer.mjs");
+  const candidates=["avc1.42001f","avc1.4d0028"];let config=null;
+  for(const codec of candidates){const c={codec:codec,width:width,height:height,bitrate:clamp(Math.round(width*height*fps*.035),1200000,8000000),framerate:fps,latencyMode:"quality",avc:{format:"avc"}};try{const test=await VideoEncoder.isConfigSupported(c);if(test.supported){config=test.config||c;break;}}catch(e){}}
+  if(!config)throw new Error("当前设备没有可用的 H.264 编码配置。请降低导出清晰度或帧率。");
+  const muxer=new mod.Muxer({target:new mod.ArrayBufferTarget(),video:{codec:"avc",width:width,height:height,frameRate:fps},fastStart:"in-memory"});
+  let encodeError=null;
+  encoder=new VideoEncoder({output:(chunk,metadata)=>muxer.addVideoChunk(chunk,metadata),error:e=>{encodeError=e;}});
+  encoder.configure(config);
+  const batch=Math.max(30,fps*2);
+  for(let start=0;start<frameCount;start+=batch){
+   if(encodeError)throw encodeError;
+   const end=Math.min(frameCount,start+batch);
+   for(let i=start;i<end;i++){
+    const sec=Math.max(0,totalSeconds-i/fps),canvas=i===0?first:makeFrame(sec,totalSeconds,scale,true,bounds,true);
+    const vf=new VideoFrame(canvas,{timestamp:Math.round(i*1000000/fps),duration:Math.round(1000000/fps)});
+    encoder.encode(vf,{keyFrame:i===0||i%(fps*4)===0});vf.close();
+   }
+   await encoder.flush();if(encodeError)throw encodeError;
+   setStatus("离线渲染与编码："+end.toLocaleString()+" / "+frameCount.toLocaleString()+" 帧（"+Math.round(end/frameCount*100)+"%）",end/frameCount);
+   await new Promise(r=>setTimeout(r,0));
+  }
+  await encoder.flush();encoder.close();encoder=null;muxer.finalize();
+  downloadBlob(new Blob([muxer.target.buffer],{type:"video/mp4"}),fileName("mp4",width,height));
+  $("previewState").textContent="READY";setStatus("MP4 已生成。"+width+" × "+height+" px，"+fps+" fps；采用离线逐帧编码，不需要等待真实播放时长。",1);
+ }catch(error){setStatus("MP4 导出失败："+(error.message||error)+"。请检查网络、浏览器编码支持，并尝试降低清晰度。");$("previewState").textContent="READY";}
+ finally{if(encoder){try{encoder.close();}catch(e){}}setBusy(false);}
+}
+$("minutes").addEventListener("change",updateDuration);$("seconds").addEventListener("change",updateDuration);
+$("style").addEventListener("change",invalidateBounds);$("labelText").addEventListener("input",invalidateBounds);$("showLabel").addEventListener("change",invalidateBounds);
+$("trimEnabled").addEventListener("change",invalidateBounds);$("padding").addEventListener("input",invalidateBounds);
+$("backgroundMode").addEventListener("change",renderPreview);
+["textColor","accentColor","cardColor","bgColor"].forEach(id=>$(id).addEventListener("input",()=>{clearPalette();renderPreview();}));
+document.querySelectorAll(".palette-option").forEach(b=>b.addEventListener("click",()=>applyPalette(b.dataset.palette)));
+$("startBtn").addEventListener("click",startPreview);$("pauseBtn").addEventListener("click",pausePreview);$("resetBtn").addEventListener("click",resetPreview);
+$("gifBtn").addEventListener("click",exportGif);$("mp4Btn").addEventListener("click",exportMp4);
+applyPalette("mint");renderPreview();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
