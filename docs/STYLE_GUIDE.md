@@ -9,8 +9,9 @@
 - The checkerboard denotes transparency in the preview only; it must never be included in exported files.
 
 ## Footer and copyright
-- Use the shared plastocyanin footer structure: a 2 px dark blue-gray separator, left-side project identity, and right-aligned copyright details on desktop; stack and left-align the content on mobile.
-- Show a dynamic current year and the public rights holder as `© YYYY hyphoon. All rights reserved.`. Put the project-specific Chinese copyright notice on its own line, and keep the GitHub source link separate from the copyright statement.
+- Reuse the footer HTML structure and CSS measurements from NMR Atlas / SpinFront: `.site-footer.container`, a 2 px dark blue-gray separator, the Georgia `plastocyanin.` parent link with gold `o` and period, the project name on the second line, and a short sans-serif descriptor on the third line.
+- The right column must follow the shared wording and alignment: `© YYYY wuhaifeng@ustc.edu.cn. All rights reserved.` on the first line and one project-specific Chinese copyright notice on the second line. Use the current year dynamically. Keep the public email as the rights-line contact and do not add a separate source-link row.
+- Match shared desktop padding and right alignment; at mobile widths, stack the footer and left-align the right column with the established 15 px top gap.
 - The repository currently has no license file. Do not imply that public source visibility grants redistribution or commercial-use rights.
 
 ## Content trimming
